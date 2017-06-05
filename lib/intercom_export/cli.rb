@@ -65,8 +65,7 @@ module IntercomExport
 
     def intercom_client
       @intercom_client ||= Intercom::Client.new(
-        api_key: options.fetch(:intercom_api_key),
-        app_id: options.fetch(:intercom_app_id)
+        token: options.fetch(:intercom_token)
       )
     end
 
