@@ -1,3 +1,5 @@
+require 'pry'
+
 module IntercomExport
   module Executor
     class Zendesk
@@ -34,6 +36,7 @@ module IntercomExport
       end
 
       def import_ticket(details)
+        binding.pry
         client.tickets.import!(details)
       end
 

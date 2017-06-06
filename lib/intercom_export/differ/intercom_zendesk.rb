@@ -55,8 +55,10 @@ module IntercomExport
           name: :import_ticket,
           details: {
             external_id: intercom_conversation.reference.value,
-            tags: intercom_conversation.tags,
-            status: intercom_conversation.open ? 'pending' : 'solved',
+            type: "incident",
+            custom_fields: [{ id: 72775648, value: "other" }],
+            tags: (intercom_conversation.tags << :intercom_export),
+            status: 'solved',
             requester_id: intercom_conversation.user,
             assignee_id: intercom_conversation.assignee,
             subject: strip_html(intercom_conversation.conversation_message.fetch(:subject)),
