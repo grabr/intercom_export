@@ -35,9 +35,7 @@ module IntercomExport
           load_user(object)
         when ::Intercom::Admin
           load_admin(object)
-        when ::Intercom::NobodyAdmin
-          nil
-        when ::Intercom::Bot
+        when ::Intercom::NobodyAdmin, ::Intercom::Lead, ::Intercom::Bot
           nil
         else
           raise "Unrecognised object #{object.inspect}"
