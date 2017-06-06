@@ -1,5 +1,3 @@
-require 'pry'
-
 module IntercomExport
   module Executor
     class Zendesk
