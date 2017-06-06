@@ -26,6 +26,7 @@ module IntercomExport
       @stdout = stdout
       @stderr = stderr
       Intercom::Utils.define_lightweight_class('NobodyAdmin')
+      Intercom::Utils.define_lightweight_class('Lead')
     end
 
     def run
