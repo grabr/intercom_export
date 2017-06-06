@@ -62,6 +62,7 @@ module IntercomExport
         c.url = "https://#{options.fetch(:zendesk_address)}/api/v2"
         c.username = options.fetch(:zendesk_username)
         c.token = options.fetch(:zendesk_token)
+        c.retry = true
       end
     end
 
