@@ -36,7 +36,6 @@ module IntercomExport
       end
 
       def import_ticket(details)
-        binding.pry
         client.tickets.import!(details)
       end
 
