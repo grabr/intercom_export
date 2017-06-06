@@ -69,7 +69,7 @@ module IntercomExport
             ] + intercom_conversation.conversation_parts.map { |part|
               {
                 author_id: part.fetch(:author),
-                value: html_to_ascii(part.fetch(:body)),
+                value: (html_to_ascii(part.fetch(:body))),
                 public: part.fetch(:part_type) != 'note',
                 created_at: time(part.fetch(:created_at))
               }
@@ -104,7 +104,12 @@ module IntercomExport
         dup.css(blocks.join(',')).each { |n| n.after("\n\n") }
 
         # Return the modified text content
-        dup.text.strip
+        ascii = dup.text.strip
+        if ascii == ""
+          "===Blank comment==="
+        else
+          ascii
+        end
       end
     end
   end
