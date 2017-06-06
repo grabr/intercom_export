@@ -37,6 +37,8 @@ module IntercomExport
           load_admin(object)
         when ::Intercom::NobodyAdmin
           nil
+        when ::Intercom::Bot
+          nil
         else
           raise "Unrecognised object #{object.inspect}"
         end
