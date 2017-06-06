@@ -51,6 +51,8 @@ module IntercomExport
       end
 
       def import_ticket(intercom_conversation)
+        body = intercom_conversation.conversation_message.fetch(:body)
+        body = "===Blank body===" if body == ""
         {
           name: :import_ticket,
           details: {
@@ -64,7 +66,7 @@ module IntercomExport
             subject: strip_html(intercom_conversation.conversation_message.fetch(:subject)),
             comments: [
               author_id: intercom_conversation.user,
-              html_body: intercom_conversation.conversation_message.fetch(:body),
+              html_body: body,
               created_at: time(intercom_conversation.created_at)
             ] + intercom_conversation.conversation_parts.map { |part|
               {
