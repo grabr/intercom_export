@@ -63,6 +63,7 @@ module IntercomExport
         c.username = options.fetch(:zendesk_username)
         c.token = options.fetch(:zendesk_token)
         c.retry = true
+        c.client_options = {request: {timeout: 20}}
       end
     end
 
