@@ -21,7 +21,7 @@ module IntercomExport
           when :import_ticket
             import_ticket(details)
           end
-          save_reference(command[:reference].value, result.id) if command.fetch(:reference, nil)
+          save_reference(command[:reference].value, result.id) if result && command.fetch(:reference, nil)
         end
       end
 
