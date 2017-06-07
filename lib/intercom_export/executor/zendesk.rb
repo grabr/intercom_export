@@ -10,24 +10,18 @@ module IntercomExport
       end
 
       def call(commands)
-        begin
-          commands.each do |command|
-            executing(command)
-            details = resolve_reference(command.fetch(:details))
-            result = case command.fetch(:name)
-            when :reference
-              ReferenceResult.new(details)
-            when :import_user
-              import_user(details)
-            when :import_ticket
-              import_ticket(details)
-            end
-            save_reference(command[:reference].value, result.id) if command.fetch(:reference, nil)
+        commands.each do |command|
+          executing(command)
+          details = resolve_reference(command.fetch(:details))
+          result = case command.fetch(:name)
+          when :reference
+            ReferenceResult.new(details)
+          when :import_user
+            import_user(details)
+          when :import_ticket
+            import_ticket(details)
           end
-        rescue ::ZendeskAPI::Error::NetworkError => e
-          puts "Importing network error: #{e.response[:body]['error']} - status: #{e.response[:status]}"
-        rescue ::ZendeskAPI::Error::RecordInvalid => e
-          puts "Importing zendesk validation error: #{e.response[:body]['error']} - status: #{e.response[:status]}"
+          save_reference(command[:reference].value, result.id) if command.fetch(:reference, nil)
         end
       end
 
@@ -36,11 +30,23 @@ module IntercomExport
       attr_reader :client, :references, :listener
 
       def import_user(details)
-        client.users.create!(details)
+        begin
+          client.users.create!(details)
+        rescue ::ZendeskAPI::Error::NetworkError => e
+          puts "Importing network error: #{e.response[:body]['error']} - status: #{e.response[:status]}"
+        rescue ::ZendeskAPI::Error::RecordInvalid => e
+          puts "Importing zendesk validation error: #{e.response[:body]['error']} - status: #{e.response[:status]}"
+        end
       end
 
       def import_ticket(details)
-        client.tickets.import!(details)
+        begin
+          client.tickets.import!(details)
+        rescue ::ZendeskAPI::Error::NetworkError => e
+          puts "Importing network error: #{e.response[:body]['error']} - status: #{e.response[:status]}"
+        rescue ::ZendeskAPI::Error::RecordInvalid => e
+          puts "Importing zendesk validation error: #{e.response[:body]['error']} - status: #{e.response[:status]}"
+        end
       end
 
       def save_reference(local_id, remote_id)
