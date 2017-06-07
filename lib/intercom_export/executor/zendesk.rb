@@ -34,7 +34,11 @@ module IntercomExport
       end
 
       def import_ticket(details)
-        client.tickets.import!(details)
+        begin
+          client.tickets.import!(details)
+        rescue ::ZendeskAPI::Error::NetworkError => e
+          puts "Importing error: #{e.response[:body]['error']} - status: #{e.response[:status]}"
+        end
       end
 
       def save_reference(local_id, remote_id)
