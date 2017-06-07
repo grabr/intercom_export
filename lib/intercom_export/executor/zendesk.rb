@@ -10,18 +10,24 @@ module IntercomExport
       end
 
       def call(commands)
-        commands.each do |command|
-          executing(command)
-          details = resolve_reference(command.fetch(:details))
-          result = case command.fetch(:name)
-          when :reference
-            ReferenceResult.new(details)
-          when :import_user
-            import_user(details)
-          when :import_ticket
-            import_ticket(details)
+        begin
+          commands.each do |command|
+            executing(command)
+            details = resolve_reference(command.fetch(:details))
+            result = case command.fetch(:name)
+            when :reference
+              ReferenceResult.new(details)
+            when :import_user
+              import_user(details)
+            when :import_ticket
+              import_ticket(details)
+            end
+            save_reference(command[:reference].value, result.id) if command.fetch(:reference, nil)
           end
-          save_reference(command[:reference].value, result.id) if command.fetch(:reference, nil)
+        rescue ::ZendeskAPI::Error::NetworkError => e
+          puts "Importing network error: #{e.response[:body]['error']} - status: #{e.response[:status]}"
+        rescue ::ZendeskAPI::Error::RecordInvalid => e
+          puts "Importing zendesk validation error: #{e.response[:body]['error']} - status: #{e.response[:status]}"
         end
       end
 
@@ -34,13 +40,7 @@ module IntercomExport
       end
 
       def import_ticket(details)
-        begin
-          client.tickets.import!(details)
-        rescue ::ZendeskAPI::Error::NetworkError => e
-          puts "Importing network error: #{e.response[:body]['error']} - status: #{e.response[:status]}"
-        rescue ::ZendeskAPI::Error::RecordInvalid => e
-          puts "Importing zendesk validation error: #{e.response[:body]['error']} - status: #{e.response[:status]}"
-        end
+        client.tickets.import!(details)
       end
 
       def save_reference(local_id, remote_id)
