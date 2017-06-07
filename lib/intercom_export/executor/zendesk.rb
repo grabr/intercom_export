@@ -37,7 +37,9 @@ module IntercomExport
         begin
           client.tickets.import!(details)
         rescue ::ZendeskAPI::Error::NetworkError => e
-          puts "Importing error: #{e.response[:body]['error']} - status: #{e.response[:status]}"
+          puts "Importing network error: #{e.response[:body]['error']} - status: #{e.response[:status]}"
+        rescue ::ZendeskAPI::Error::RecordInvalid => e
+          puts "Importing zendesk validation error: #{e.response[:body]['error']} - status: #{e.response[:status]}"
         end
       end
 
